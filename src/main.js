@@ -20,8 +20,15 @@ scene("game", () => {
     onKeyPress("space", () => {
         if (player.isGrounded()) {
             player.jump();
+        }
+    });
+
+    // Count jumped over obstacles by calculating the position of the player relative to the trees
+    onUpdate("tree", (tree) => {
+        if (tree.pos.x < player.pos.x && !tree.passed) {
             score++;
             scoreLabel.text = score;
+            tree.passed = true;
         }
     });
 
@@ -35,6 +42,7 @@ scene("game", () => {
             color(255, 180, 255),
             move(LEFT, 400),
             "tree",
+            { passed: false }, // Add "passed" parameter for counter and set default to false
         ]);
 
         wait(rand(0.9, 2), () => {
@@ -82,4 +90,3 @@ scene("lose", () => {
 })
 
 go("game")
-
