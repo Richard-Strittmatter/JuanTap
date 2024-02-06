@@ -27,7 +27,7 @@ export function gameScene() {
             body(),
         ])
 
-        setPlayerMovement(player)
+        setPlayerMovement(player, gameState)
         calculateScore(player, gameState);
         spawnObstacles(gameState);
 
@@ -50,14 +50,26 @@ function setBackground() {
  * Define player movement
  *
  * @param player The player constant
+ * @param gameState
  */
-function setPlayerMovement(player) { // 'player' als Parameter
+function setPlayerMovement(player, gameState) { // 'player' als Parameter
     const normalGravity = 1600;
     const increasedGravity = 4000;
+    let jumps = 0;
 
+    // Allow double jumps if score is > 10
     onKeyPress("space", () => {
         if (player.isGrounded()) {
             player.jump();
+        } else if (jumps < 2 && gameState.score > 10) {
+            player.jump();
+            jumps++;
+        }
+    });
+
+    player.onUpdate(() => {
+        if (player.isGrounded()) {
+            jumps = 0;
         }
     });
 
