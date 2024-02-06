@@ -26,13 +26,7 @@ export function gameScene() {
         spawnTree();
 
         // add platform
-        add([
-            sprite("plattform"),
-            pos(0, height() - 153),
-            area(),
-            fixed(),
-            body({isStatic: true}),
-        ])
+        createMovingPlatform()
     });
 }
 
@@ -121,4 +115,27 @@ function calculateScore(player) {
         shake();
         go("lose", score);
     })
+}
+
+function createMovingPlatform() {
+    const platformSpeed = 400;
+    const platformWidth = width();
+
+    for (let i = 0; i < 2; i++) {
+        add([
+            sprite("plattform"),
+            pos(i * platformWidth, height() - 153), // Put the platforms next to each other
+            area(),
+            body({isStatic: true}),
+            "movingPlatform",
+            {
+                update() {
+                    this.move(-platformSpeed, 0);
+                    if (this.pos.x <= -this.width) {
+                        this.pos.x += this.width * 2;
+                    }
+                }
+            }
+        ]);
+    }
 }
