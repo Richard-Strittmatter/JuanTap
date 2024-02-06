@@ -10,7 +10,8 @@ export function gameScene() {
     loadSprite("rock", "sprites/rock.png");
 
     let gameState = {
-        score: 0
+        score: 0,
+        speed: 400,
     };
 
     scene("game", () => {
@@ -30,9 +31,7 @@ export function gameScene() {
         setPlayerMovement(player, gameState)
         calculateScore(player, gameState);
         spawnObstacles(gameState);
-
-        // add platform
-        createMovingPlatform()
+        createMovingPlatform(gameState)
     });
 }
 
@@ -109,9 +108,9 @@ function spawnObstacles(gameState) {
     }
 
     // Scale and position for obstacles
-    let posAndScale = { y: height() - 145, scale: 0.20 };
+    let posAndScale = {y: height() - 145, scale: 0.20};
     if (obstacleType === "cactus") posAndScale.scale = 0.27;
-    else if (obstacleType === "rock") posAndScale = { y: height() - 127, scale: 0.4 }
+    else if (obstacleType === "rock") posAndScale = {y: height() - 127, scale: 0.4}
 
     add([
         sprite(obstacleType),
@@ -120,9 +119,9 @@ function spawnObstacles(gameState) {
         scale(posAndScale.scale),
         pos(width(), posAndScale.y),
         anchor("botleft"),
-        move(LEFT, 400),
+        move(LEFT, gameState.speed),
         "tree",
-        { passed: false },
+        {passed: false},
     ]);
 
     wait(rand(0.9, 2), () => {
@@ -148,12 +147,20 @@ function calculateScore(player, gameState) {
         color(0, 0, 0),
     ]);
 
+    let lastSpeedIncreaseScore = 0;
+
     // Count jumped over obstacles by calculating the position of the player relative to the trees
     onUpdate("tree", (tree) => {
         if (tree.pos.x < player.pos.x && !tree.passed) {
-            gameState.score++; // Aktualisiere den Score im gameState-Objekt
+            gameState.score++;
             scoreLabel.text = "Score: " + gameState.score;
             tree.passed = true;
+        }
+
+        // Check if score reached a 10+ mark
+        if (Math.floor(gameState.score / 10) > Math.floor(lastSpeedIncreaseScore / 10)) {
+            gameState.speed += 60; // Increase speed by 60
+            lastSpeedIncreaseScore = gameState.score;
         }
     });
 
@@ -161,18 +168,23 @@ function calculateScore(player, gameState) {
     player.onCollide("tree", () => {
         shake();
         go("lose", gameState.score);
-        gameState.score = 0;
+        gameState.score = 0; // Reset score
+        gameState.speed = 400; // Reset speed
     })
 
     player.onUpdate(() => {
         if (player.pos.x < 0) {
-            go("lose", { score: gameState.score });
+            go("lose", {score: gameState.score});
         }
     });
 }
 
-function createMovingPlatform() {
-    const platformSpeed = 400;
+/**
+ *
+ * @param gameState
+ */
+function createMovingPlatform(gameState) {
+    const platformSpeed = gameState.speed;
     const platformWidth = width();
     let platforms = [];
 
