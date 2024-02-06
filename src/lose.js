@@ -17,5 +17,9 @@ export function loseScene() {
             scale(2),
             anchor("center"),
         ]);
+
+        onKeyPress("space", () => {
+            go("game");
+        })
     })
 }
