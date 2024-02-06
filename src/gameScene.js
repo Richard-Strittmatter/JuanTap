@@ -16,7 +16,7 @@ export function gameScene() {
         // putting together our player character
         const player = add([
             sprite("bean"),
-            pos(80, 40),
+            pos(300, 40),
             area(),
             body(),
         ])
@@ -46,6 +46,9 @@ function setBackground() {
  * @param player The player constant
  */
 function setPlayerMovement(player) { // 'player' als Parameter
+    const normalGravity = 1600;
+    const increasedGravity = 4000;
+
     onKeyPress("space", () => {
         if (player.isGrounded()) {
             player.jump();
@@ -58,6 +61,16 @@ function setPlayerMovement(player) { // 'player' als Parameter
 
     onKeyDown("right", () => {
         player.move(450, 0);
+    });
+
+    onKeyDown("down", () => {
+        if (!player.isGrounded()) {
+            setGravity(increasedGravity);
+        }
+    });
+
+    onKeyRelease("down", () => {
+        setGravity(normalGravity);
     });
 }
 
@@ -115,6 +128,12 @@ function calculateScore(player) {
         shake();
         go("lose", score);
     })
+
+    player.onUpdate(() => {
+        if (player.pos.x < 0) {
+            go("lose", { score: score });
+        }
+    });
 }
 
 function createMovingPlatform() {
