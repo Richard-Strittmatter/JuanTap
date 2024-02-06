@@ -124,7 +124,10 @@ function spawnObstacles(gameState) {
         {passed: false},
     ]);
 
-    wait(rand(0.9, 2), () => {
+    let spawnIntervalFrom = gameState.score >= 20 ? 0.5 : 0.9;
+    let spawnIntervalTo = gameState.score >= 20 ? 1.5 : 2;
+
+    wait(rand(spawnIntervalFrom, spawnIntervalTo), () => {
         spawnObstacles(gameState);
     });
 }
