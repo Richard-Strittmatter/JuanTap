@@ -21,33 +21,11 @@ export function gameScene() {
             body(),
         ])
 
-        onKeyPress("space", () => {
-            if (player.isGrounded()) {
-                player.jump();
-            }
-        });
+        setPlayerMovement(player)
+        calculateScore(player)
+        spawnTree();
 
-        // keep track of score
-        let score = 0;
-
-        const scoreLabel = add([
-            text("Score: " + score),
-            pos(width() / 2, height() / 7),
-            scale(2),
-            anchor("center"),
-            color(0, 0, 0),
-        ]);
-
-        // Count jumped over obstacles by calculating the position of the player relative to the trees
-        onUpdate("tree", (tree) => {
-            if (tree.pos.x < player.pos.x && !tree.passed) {
-                score++;
-                scoreLabel.text = "Score: " + score;
-                tree.passed = true;
-            }
-        });
-
-// add platform
+        // add platform
         add([
             sprite("plattform"),
             pos(0, height() - 153),
@@ -55,13 +33,6 @@ export function gameScene() {
             fixed(),
             body({isStatic: true}),
         ])
-
-        spawnTree();
-
-        player.onCollide("tree", () => {
-            shake();
-            go("lose", score);
-        })
     });
 }
 
@@ -75,7 +46,33 @@ function setBackground() {
     ]);
 }
 
-function spawnTree() {
+/**
+ * Define player movement
+ *
+ * @param player The player constant
+ */
+function setPlayerMovement(player) { // 'player' als Parameter
+    onKeyPress("space", () => {
+        if (player.isGrounded()) {
+            player.jump();
+        }
+    });
+
+    onKeyDown("left", () => {
+        player.move(-450, 0);
+    });
+
+    onKeyDown("right", () => {
+        player.move(450, 0);
+    });
+}
+
+/**
+ * Spawn tumbleweed obstacles
+ *
+ * @param player
+ */
+function spawnTree(player) {
     const tumbleweed = add([
         sprite("tumbleweed"),
         area(),
@@ -91,4 +88,37 @@ function spawnTree() {
     wait(rand(0.9, 2), () => {
         spawnTree();
     });
+}
+
+/**
+ * Calculate the score
+ *
+ * @param player
+ */
+function calculateScore(player) {
+    // keep track of score
+    let score = 0;
+
+    const scoreLabel = add([
+        text("Score: " + score),
+        pos(width() / 2, height() / 7),
+        scale(2),
+        anchor("center"),
+        color(0, 0, 0),
+    ]);
+
+    // Count jumped over obstacles by calculating the position of the player relative to the trees
+    onUpdate("tree", (tree) => {
+        if (tree.pos.x < player.pos.x && !tree.passed) {
+            score++;
+            scoreLabel.text = "Score: " + score;
+            tree.passed = true;
+        }
+    });
+
+    // Pass the score to the losing screen
+    player.onCollide("tree", () => {
+        shake();
+        go("lose", score);
+    })
 }
