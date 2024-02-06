@@ -23,11 +23,19 @@ scene("game", () => {
         }
     });
 
+    // keep track of score
+    let score = 0;
+
+    const scoreLabel = add([
+        text("Score: " + score),
+        pos(24, 24),
+    ]);
+
     // Count jumped over obstacles by calculating the position of the player relative to the trees
     onUpdate("tree", (tree) => {
         if (tree.pos.x < player.pos.x && !tree.passed) {
             score++;
-            scoreLabel.text = score;
+            scoreLabel.text = "Score: " + score;
             tree.passed = true;
         }
     });
@@ -50,11 +58,6 @@ scene("game", () => {
         });
     }
 
-    player.onCollide("tree", () => {
-        addKaboom(player.pos);
-        shake();
-    });
-
 // add platform
     add([
         rect(width(), 48),
@@ -68,25 +71,26 @@ scene("game", () => {
     spawnTree();
 
     player.onCollide("tree", () => {
-        addKaboom();
         shake();
-        go("lose");
+        go("lose", score);
     })
-
-    let score = 0;
-    const scoreLabel = add([
-        text(score),
-        pos(24, 24),
-    ])
 })
 
-scene("lose", () => {
+scene("lose", (score) => {
     add([
-        text("Gay"),
+        text("Game Over"),
         pos(center()),
         scale(5, 5),
         anchor("center"),
     ])
+
+    // display score
+    add([
+        text("Score: " + score),
+        pos(width() / 2, height() / 2 + 120),
+        scale(2),
+        anchor("center"),
+    ]);
 })
 
 go("game")
