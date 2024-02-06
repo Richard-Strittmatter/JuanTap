@@ -177,7 +177,7 @@ function calculateScore(player, gameState) {
 
     player.onUpdate(() => {
         if (player.pos.x < 0) {
-            go("lose", {score: gameState.score});
+            go("lose", gameState.score);
         }
     });
 }
