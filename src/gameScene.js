@@ -162,22 +162,23 @@ function calculateScore(player, gameState) {
 function createMovingPlatform() {
     const platformSpeed = 400;
     const platformWidth = width();
+    let platforms = [];
 
     for (let i = 0; i < 2; i++) {
-        add([
+        platforms.push(add([
             sprite("plattform"),
-            pos(i * platformWidth, height() - 153), // Put the platforms next to each other
+            pos(i * platformWidth, height() - 153),
             area(),
             body({isStatic: true}),
             "movingPlatform",
-            {
-                update() {
-                    this.move(-platformSpeed, 0);
-                    if (this.pos.x <= -this.width) {
-                        this.pos.x += this.width * 2;
-                    }
-                }
-            }
-        ]);
+        ]));
     }
+
+    onUpdate("movingPlatform", (platform) => {
+        platform.move(-platformSpeed, 0);
+        if (platform.pos.x <= -platformWidth) {
+            let maxRight = platforms.reduce((max, p) => Math.max(max, p.pos.x), 0);
+            platform.pos.x = maxRight + platformWidth;
+        }
+    });
 }
