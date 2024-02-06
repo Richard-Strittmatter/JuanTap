@@ -3,6 +3,9 @@
  */
 export function gameScene() {
     loadSprite("bean", "sprites/bean.png")
+    loadSprite("tumbleweed", "sprites/tumbleweed.png")
+    loadSprite("plattform", "sprites/plattform.png")
+    loadSprite("background", "sprites/desert.png");
 
     scene("game", () => {
         // Set scene background
@@ -29,7 +32,10 @@ export function gameScene() {
 
         const scoreLabel = add([
             text("Score: " + score),
-            pos(24, 24),
+            pos(width() / 2, height() / 7),
+            scale(2),
+            anchor("center"),
+            color(0, 0, 0),
         ]);
 
         // Count jumped over obstacles by calculating the position of the player relative to the trees
@@ -41,32 +47,13 @@ export function gameScene() {
             }
         });
 
-        function spawnTree() {
-            add([
-                rect(48, rand(24, 64)),
-                area(),
-                outline(4),
-                pos(width(), height() - 48),
-                anchor("botleft"),
-                color(255, 180, 255),
-                move(LEFT, 400),
-                "tree",
-                {passed: false}, // Add "passed" parameter for counter and set default to false
-            ]);
-
-            wait(rand(0.9, 2), () => {
-                spawnTree();
-            });
-        }
-
 // add platform
         add([
-            rect(width(), 48),
-            pos(0, height() - 48),
-            outline(4),
+            sprite("plattform"),
+            pos(0, height() - 153),
             area(),
+            fixed(),
             body({isStatic: true}),
-            color(7, 125, 39),
         ])
 
         spawnTree();
@@ -79,15 +66,29 @@ export function gameScene() {
 }
 
 function setBackground() {
-    let bgImage =  loadSprite("background", "sprites/desert.png");
-
-    let background = add([
+    add([
         sprite("background"),
-        // Make the background centered on the screen
         pos(width() / 2, height() / 2),
         anchor("center"),
-        // Allow the background to be scaled
-        scale(1.1),
+        scale(1.07),
         fixed()
     ]);
+}
+
+function spawnTree() {
+    const tumbleweed = add([
+        sprite("tumbleweed"),
+        area(),
+        outline(4),
+        scale(0.20),
+        pos(width(), height() - 145),
+        anchor("botleft"),
+        move(LEFT, 400),
+        "tree",
+        {passed: false}, // Add "passed" parameter for counter and set default to false
+    ]);
+
+    wait(rand(0.9, 2), () => {
+        spawnTree();
+    });
 }
