@@ -97,6 +97,21 @@ function setPlayerMovement(player, gameState) { // 'player' als Parameter
         }
     });
 
+    // Allow double jumps if score is > 10
+    onKeyPress("w", () => {
+        if (player.isGrounded() || (jumps < 2 && gameState.score > 10)) {
+            player.jump();
+            jumps++;
+            playerState = "jumping";
+            player.use(sprite("jump"));
+            player.use(
+                area({
+                    scale: 0.5,
+                    offset: vec2(0, +53)
+                }));
+        }
+    });
+
     // Reset after jumping
     player.onUpdate(() => {
         if (player.isGrounded()) {
@@ -109,21 +124,21 @@ function setPlayerMovement(player, gameState) { // 'player' als Parameter
         }
     });
 
-    onKeyDown("left", () => {
+    onKeyDown("a", () => {
         player.move(-450, 0);
     });
 
-    onKeyDown("right", () => {
+    onKeyDown("d", () => {
         player.move(450, 0);
     });
 
-    onKeyDown("down", () => {
+    onKeyDown("s", () => {
         if (!player.isGrounded()) {
             setGravity(increasedGravity);
         }
     });
 
-    onKeyRelease("down", () => {
+    onKeyRelease("s", () => {
         setGravity(normalGravity);
     });
 }
