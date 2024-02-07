@@ -8,6 +8,7 @@ export function gameScene() {
     loadSprite("background", "sprites/desert.png");
     loadSprite("cactus", "sprites/cactus.png");
     loadSprite("rock", "sprites/rock.png");
+    loadSprite("jump", "sprites/jump.png");
 
     loadSprite("playerRun", [
         "sprites/walk2.png",
@@ -40,11 +41,11 @@ export function gameScene() {
         // putting together our player character
         const player = add([
             sprite("playerRun"),
-            pos(300, 300),
+            pos(300, 40),
             scale(0.5),
             area({
                 scale: 0.6,
-                offset: vec2(0, + 48)
+                offset: vec2(0, +48)
             }),
             anchor("center"),
             body(),
@@ -79,19 +80,32 @@ function setPlayerMovement(player, gameState) { // 'player' als Parameter
     const increasedGravity = 4000;
     let jumps = 0;
 
+    let playerState = "running";
+
     // Allow double jumps if score is > 10
     onKeyPress("space", () => {
-        if (player.isGrounded()) {
-            player.jump();
-        } else if (jumps < 2 && gameState.score > 10) {
+        if (player.isGrounded() || (jumps < 2 && gameState.score > 10)) {
             player.jump();
             jumps++;
+            playerState = "jumping";
+            player.use(sprite("jump"));
+            player.use(
+                area({
+                    scale: 0.5,
+                    offset: vec2(0, +53)
+                }));
         }
     });
 
+    // Reset after jumping
     player.onUpdate(() => {
         if (player.isGrounded()) {
             jumps = 0;
+            if (playerState !== "running") {
+                playerState = "running";
+                player.use(sprite("playerRun"));
+                player.play("run");
+            }
         }
     });
 
