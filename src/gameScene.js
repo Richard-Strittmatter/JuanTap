@@ -9,6 +9,23 @@ export function gameScene() {
     loadSprite("cactus", "sprites/cactus.png");
     loadSprite("rock", "sprites/rock.png");
 
+    loadSprite("playerRun", [
+        "sprites/walk2.png",
+        "sprites/walk3.png",
+        "sprites/walk4.png",
+    ], {
+        sliceX: 3,
+        anims: {
+            run: {
+                from: 0,
+                to: 2,
+                loop: true,
+                speed: 20,
+            },
+        },
+    });
+
+
     let gameState = {
         score: 0,
         speed: 400,
@@ -22,11 +39,17 @@ export function gameScene() {
 
         // putting together our player character
         const player = add([
-            sprite("bean"),
-            pos(300, 40),
-            area(),
+            sprite("playerRun"),
+            pos(300, 300),
+            scale(0.5),
+            area({
+                scale: 0.6,
+                offset: vec2(0, + 48)
+            }),
+            anchor("center"),
             body(),
         ])
+        player.play("run");
 
         setPlayerMovement(player, gameState)
         calculateScore(player, gameState);
