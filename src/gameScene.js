@@ -145,13 +145,18 @@ function spawnObstacles(gameState) {
     }
 
     // Scale and position for obstacles
+    let rockArea;
     let posAndScale = {y: height() - 145, scale: 0.20};
     if (obstacleType === "cactus") posAndScale.scale = 0.27;
     else if (obstacleType === "rock") posAndScale = {y: height() - 120, scale: 0.51}
 
+    let areaConfig = obstacleType === "rock" ?
+        area({ scale: vec2(0.4, 1), offset: vec2(200, 0) }) :
+        area();
+
     add([
         sprite(obstacleType),
-        area(),
+        areaConfig,
         outline(4),
         scale(posAndScale.scale),
         pos(width(), posAndScale.y),
