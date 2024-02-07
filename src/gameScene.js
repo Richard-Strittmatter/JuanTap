@@ -110,7 +110,7 @@ function spawnObstacles(gameState) {
     // Scale and position for obstacles
     let posAndScale = {y: height() - 145, scale: 0.20};
     if (obstacleType === "cactus") posAndScale.scale = 0.27;
-    else if (obstacleType === "rock") posAndScale = {y: height() - 127, scale: 0.4}
+    else if (obstacleType === "rock") posAndScale = {y: height() - 120, scale: 0.51}
 
     add([
         sprite(obstacleType),
