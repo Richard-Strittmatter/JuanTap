@@ -2,6 +2,9 @@
  * The game scene
  */
 export function gameScene() {
+    loadSound("music", "sounds/latin.wav")
+    loadSound("jump", "sounds/jump.mp3")
+
     loadSprite("bean", "sprites/bean.png")
     loadSprite("tumbleweed", "sprites/tumbleweed.png")
     loadSprite("plattform", "sprites/plattform.png")
@@ -33,6 +36,10 @@ export function gameScene() {
     };
 
     scene("game", () => {
+        const music = play("music", {
+            loop: true,
+            volume: 0.1,
+        });
         // Set scene background
         setBackground();
 
@@ -53,7 +60,7 @@ export function gameScene() {
         player.play("run");
 
         setPlayerMovement(player, gameState)
-        calculateScore(player, gameState);
+        calculateScore(player, gameState, music);
         spawnObstacles(gameState);
         createMovingPlatform(gameState)
     });
@@ -94,6 +101,10 @@ function setPlayerMovement(player, gameState) { // 'player' als Parameter
                     scale: 0.5,
                     offset: vec2(0, +53)
                 }));
+            play("jump", {
+                loop: false,
+                volume: 0.1,
+            });
         }
     });
 
@@ -200,8 +211,9 @@ function spawnObstacles(gameState) {
  *
  * @param player
  * @param gameState
+ * @param music
  */
-function calculateScore(player, gameState) {
+function calculateScore(player, gameState, music) {
     // keep track of score
     //let score = 0;
 
@@ -236,11 +248,13 @@ function calculateScore(player, gameState) {
         go("lose", gameState.score);
         gameState.score = 0; // Reset score
         gameState.speed = 400; // Reset speed
+        music.stop();
     })
 
     player.onUpdate(() => {
         if (player.pos.x < 0) {
             go("lose", gameState.score);
+            music.stop();
         }
     });
 }
