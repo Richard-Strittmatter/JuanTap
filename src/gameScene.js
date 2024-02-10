@@ -4,6 +4,7 @@
 export function gameScene() {
     loadSound("music", "sounds/latin.wav")
     loadSound("jump", "sounds/jump.mp3")
+    loadSound("game", "sounds/game.mp3")
 
     loadSprite("bean", "sprites/bean.png")
     loadSprite("tumbleweed", "sprites/tumbleweed.png")
@@ -249,12 +250,20 @@ function calculateScore(player, gameState, music) {
         gameState.score = 0; // Reset score
         gameState.speed = 400; // Reset speed
         music.stop();
+        play("game", {
+            loop: false,
+            volume: 0.2,
+        });
     })
 
     player.onUpdate(() => {
         if (player.pos.x < 0) {
             go("lose", gameState.score);
             music.stop();
+            play("game", {
+                loop: false,
+                volume: 0.2,
+            });
         }
     });
 }
