@@ -119,6 +119,12 @@ function setPlayerMovement(player, gameState) { // 'player' als Parameter
             if (playerState !== "running") {
                 playerState = "running";
                 player.use(sprite("playerRun"));
+                player.use(
+                    area({
+                        scale: 0.6,
+                        offset: vec2(0, +48)
+                    })
+                )
                 player.play("run");
             }
         }
@@ -166,7 +172,7 @@ function spawnObstacles(gameState) {
     else if (obstacleType === "rock") posAndScale = {y: height() - 120, scale: 0.51}
 
     let areaConfig = obstacleType === "rock" ?
-        area({ scale: vec2(0.4, 1), offset: vec2(200, 0) }) :
+        area({scale: vec2(0.4, 1), offset: vec2(200, 0)}) :
         area();
 
     add([
