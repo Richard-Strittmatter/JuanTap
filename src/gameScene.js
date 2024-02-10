@@ -131,11 +131,11 @@ function setPlayerMovement(player, gameState) { // 'player' als Parameter
     });
 
     onKeyDown("a", () => {
-        player.move(-450, 0);
+        player.move(-550, 0);
     });
 
     onKeyDown("d", () => {
-        player.move(450, 0);
+        player.move(650, 0);
     });
 
     onKeyDown("s", () => {
