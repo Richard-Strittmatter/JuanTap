@@ -9,8 +9,8 @@ export function loseScene() {
 
         add([
             text("Game Over"),
-            pos(width() / 2, height() / 2 - 80),
-            scale(5, 5),
+            pos(width() / 2, height() / 2 - 60),
+            scale(3),
             anchor("center"),
             color(0,0,0),
         ])
