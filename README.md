@@ -1,8 +1,5 @@
-# Folder structure
-
-- `src` - source code for your kaboom project
-- `www` - distribution folder, contains your index.html, built js bundle and static assets
-
+## Requirements
+- Have NPM installed
 
 ## Development
 
